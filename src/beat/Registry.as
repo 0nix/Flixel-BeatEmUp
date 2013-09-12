@@ -4,6 +4,7 @@ package beat
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
+	import org.flixel.FlxTilemap;
 	/**
 	 * ...
 	 * @author 
@@ -13,6 +14,9 @@ package beat
 		private static var levels:Vector.<Object> = new Vector.<Object>();
 		public static var level:int = 0;
 		public static var player:Player;
+		public static var hitGroup:HitGroup;
+		public static var enemyGroup:EnemyGroup;
+		public static var tilemap:FlxTilemap;
 		public static const TILESIZE:int = 8;
 		public static function getCurrentLevel():String
 		{

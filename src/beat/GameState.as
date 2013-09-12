@@ -9,31 +9,29 @@ package beat
 	{
 		private var tilemap:FlxTilemap;
 		private var player:Player;
-		private var hits:FlxGroup;
-		private var enemies:FlxGroup;
+		private var hits:HitGroup;
+		private var enemies:EnemyGroup;
 		private var upperLimit:int;
 		private var lowerLimit:int;
-		private var navi:FlxSprite;
-		private var isNaviFollowingPath:Boolean = false;
 		override public function create():void
 		{
 			super.create();
 			//generals
 			FlxG.bgColor = FlxG.BLUE;
 			//field objects
-			tilemap = new FlxTilemap().loadMap(Registry.getCurrentLevel(),FlxTilemap.ImgAuto,0,0,FlxTilemap.AUTO);
-			this.add(tilemap);
-			hits = new FlxGroup(20);
-			this.add(hits);
-			enemies = new FlxGroup(20);
-			this.add(enemies);
+			Registry.tilemap = new FlxTilemap().loadMap(Registry.getCurrentLevel(), FlxTilemap.ImgAuto, 0, 0, FlxTilemap.AUTO);
+			Registry.hitGroup = new HitGroup(20);
+			Registry.enemyGroup = new EnemyGroup(20);
+			
+			this.add(Registry.tilemap);
+			this.add(Registry.hitGroup);
+			this.add(Registry.enemyGroup);
+			
 			//interactive objects
-			Registry.player = new Player(40, 60, 40,hits);
+			Registry.player = new Player(40, 60, 40);
 			this.add(Registry.player);
 			this.followSprite(Registry.player);
-			navi = new FlxSprite(30, 40);
-			navi.makeGraphic(5, 5, FlxG.GREEN);
-			this.add(navi);
+			Registry.enemyGroup.add(new Navi(80, 50));
 			//limits
 			upperLimit = 6;
 			lowerLimit = 12;
@@ -50,55 +48,21 @@ package beat
 			{
 				Registry.player.y = Registry.TILESIZE * lowerLimit - Registry.player.height;
 			}
-			// Check for expired hits
-			for ( var i:int = 0; i <= hits.members.length; i++)
-			{
-				if (hits.members[i] is Acid && Acid(hits.members[i]).toDestroy)
-				{
-					hits.remove(hits.members[i], true);
-				}
-			}
-			FlxG.collide(tilemap, navi);
-			startFollow();
-			if (isNaviFollowingPath && navi.pathSpeed == 0)
-			{
-				navi.stopFollowingPath();
-				isNaviFollowingPath = false;
-				navi.velocity.x = navi.velocity.y = 0;
-			}
-			//overlap checks
-			FlxG.overlap(player, hits, onOverlap);
-			FlxG.overlap(navi, hits, onOverlap);
+			//COLLISIONS
+			FlxG.collide(Registry.tilemap, Registry.enemyGroup);
+			FlxG.overlap(Registry.hitGroup, Registry.enemyGroup, onEnemyHit);
 		}
-		
-		private function startFollow():void 
+		private function onEnemyHit(o1:FlxBasic, o2:FlxBasic):void
 		{
-			//check for navi - player distance
-			var pointNavi:FlxPoint = new FlxPoint(navi.x, navi.y);
-			var pointPlayer:FlxPoint = new FlxPoint(Registry.player.x, Registry.player.y);
-			var distance:Number = FlxU.abs(FlxU.getDistance(pointNavi, pointPlayer));
-			if (distance >= 30 && !isNaviFollowingPath)
+			if (o1 is Acid && o2 is Navi)
 			{
-				var path:FlxPath = tilemap.findPath(pointNavi, pointPlayer,true,true);
-				navi.followPath(path,35);
-				isNaviFollowingPath = true;
-			}
-		}
-		private function onOverlap(o1:FlxBasic, o2:FlxBasic):void
-		{
-			if (o1 is Player && o2 is Acid && Acid(o2).hurtsPlayer)
-			{
-				trace("test");
-			}
-			if (o1 is FlxSprite && o2 is Acid)
-			{
-				this.remove(navi, true);
+				Registry.enemyGroup.remove(o2,true);
 			}
 		}
 		private function setCameraBounds():void
 		{
-			FlxG.camera.setBounds(0, 0, tilemap.width, tilemap.height);
-			FlxG.worldBounds = new FlxRect(0, 0, tilemap.width, tilemap.height);
+			FlxG.camera.setBounds(0, 0, Registry.tilemap.width, Registry.tilemap.height);
+			FlxG.worldBounds = new FlxRect(0, 0, Registry.tilemap.width, Registry.tilemap.height);
 		}
 		private function followSprite(s:FlxSprite):void
 		{
@@ -107,10 +71,6 @@ package beat
 				FlxG.camera.follow(s);
 				setCameraBounds();
 			}
-		}
-		private function onCollide(i:FlxBasic,b:FlxBasic):void 
-		{
-			trace("hahaderp");
 		}
 		public function GameState()
 		{

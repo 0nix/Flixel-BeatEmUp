@@ -15,10 +15,10 @@ package beat
 		private var ATTACK_REFRESH:Number = 0.6;
 		private var ATTACK_DURATION:Number = 0.35;
 		private var _shadowSize:Number = 1 / 7;
-		private var _hitGroup:FlxGroup;
+		private var _hitGroup:HitGroup;
 		private var _attackTimer:FlxTimer;
 		private var _canAttack:Boolean = true;
-		public function Player(X:Number = 0, Y:Number = 0,velocity:uint = 30,hitGroup:FlxGroup = null, SimpleGraphic:Class = null) 
+		public function Player(X:Number = 0, Y:Number = 0,velocity:uint = 30, SimpleGraphic:Class = null) 
 		{
 			super(X, Y, SimpleGraphic);
 			var runSpeed:uint = velocity;
@@ -27,7 +27,7 @@ package beat
 			drag.y = runSpeed * 6;
 			maxVelocity.x = runSpeed;
 			maxVelocity.y = jumpPower;
-			_hitGroup = hitGroup;
+			_hitGroup = Registry.hitGroup;
 			_attackTimer = new FlxTimer();
 			this.health = 100;
 		}
