@@ -22,7 +22,6 @@ package beat
 			Registry.tilemap = new FlxTilemap().loadMap(Registry.getCurrentLevel(), FlxTilemap.ImgAuto, 0, 0, FlxTilemap.AUTO);
 			Registry.hitGroup = new HitGroup(20);
 			Registry.enemyGroup = new EnemyGroup(20);
-			
 			this.add(Registry.tilemap);
 			this.add(Registry.hitGroup);
 			this.add(Registry.enemyGroup);
