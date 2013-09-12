@@ -5,7 +5,6 @@ package beat
 	 * ...
 	 * @author 
 	 */
-	//[SWF(width="320", height="240", backgroundColor="#DDDDDD")]
 	public class FlixelEcosystem extends FlxGame 
 	{
 		public function FlixelEcosystem(width:int, height:int,zoom:int=1) 

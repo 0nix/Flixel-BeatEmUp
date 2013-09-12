@@ -12,8 +12,8 @@ package beat
 	 */
 	public class Player extends FlxSprite 
 	{	
-		private const ATTACK_REFRESH:Number = 0.7;
-		private const ATTACK_DURATION:Number = 0.08;
+		private var ATTACK_REFRESH:Number = 0.6;
+		private var ATTACK_DURATION:Number = 0.35;
 		private var _shadowSize:Number = 1 / 7;
 		private var _hitGroup:FlxGroup;
 		private var _attackTimer:FlxTimer;
@@ -29,48 +29,76 @@ package beat
 			maxVelocity.y = jumpPower;
 			_hitGroup = hitGroup;
 			_attackTimer = new FlxTimer();
+			this.health = 100;
 		}
 		override public function update():void
 		{
 			super.update();
 			this.acceleration.x = 0;
 			this.acceleration.y = 0;
-			if(FlxG.keys.LEFT)
+			if (_canAttack)
 			{
-				acceleration.x -= drag.x;
-				this.facing = FlxObject.LEFT;
-				//this.allowCollisions = FlxObject.LEFT;
-			}
-			if(FlxG.keys.RIGHT)
-			{
-				acceleration.x += drag.x;
-				this.facing = FlxObject.RIGHT;
-				//this.allowCollisions = FlxObject.RIGHT;
-			}
-			if(FlxG.keys.UP)
-			{
-				acceleration.y -= drag.y;
-			}
-			if(FlxG.keys.DOWN)
-			{
-				acceleration.y += drag.y;
-				
-			}
-			if (FlxG.keys.SPACE && _canAttack)
-			{
-				if (_hitGroup && this.facing == FlxObject.LEFT)
+				if (FlxG.keys.Q)
 				{
-					(_hitGroup.recycle(Acid) as Acid).init(ATTACK_DURATION, this.width/2, this.height, this.x - this.width/2, this.y);
-					summonSickness();
+					this.knockback();
 				}
-				else if (_hitGroup && this.facing == FlxObject.RIGHT)
+				if(FlxG.keys.LEFT)
 				{
-					(_hitGroup.recycle(Acid) as Acid).init(ATTACK_DURATION, this.width/2, this.height, this.x + this.width, this.y);
-					summonSickness();
+					acceleration.x -= drag.x;
+					this.facing = FlxObject.LEFT;
+				}
+				if(FlxG.keys.RIGHT)
+				{
+					acceleration.x += drag.x;
+					this.facing = FlxObject.RIGHT;
+				}
+				if(FlxG.keys.UP)
+				{
+					acceleration.y -= drag.y;
+				}
+				if(FlxG.keys.DOWN)
+				{
+					acceleration.y += drag.y;
+					
+				}
+				if (FlxG.keys.SPACE)
+				{
+					var modifier:int = 0;
+					if (FlxG.keys.UP)
+					{
+						modifier = -3;
+					}
+					else if (FlxG.keys.DOWN)
+					{
+						modifier = 3;
+					}
+					if (_hitGroup && this.facing == FlxObject.LEFT)
+					{
+						(_hitGroup.recycle(Acid) as Acid).init(ATTACK_DURATION, 4*this.width/5, this.height, this.x - 4*this.width/5, this.y+modifier);
+						summonSickness();
+					}
+					else if (_hitGroup && this.facing == FlxObject.RIGHT)
+					{
+						(_hitGroup.recycle(Acid) as Acid).init(ATTACK_DURATION,  4*this.width/5, this.height, this.x + this.width, this.y+modifier);
+						summonSickness();
+					}
 				}
 			}
 		}
-		
+		private function knockback():void
+		{
+			summonSickness();
+			if(this.facing == FlxObject.LEFT)
+			{
+					acceleration.x += drag.x*900000;
+			}
+			else if(this.facing == FlxObject.RIGHT)
+			{
+					acceleration.x -= drag.x*900000;
+			}
+			FlxG.camera.shake(0.005, 0.2);
+			this.flicker(0.01);
+		}
 		private function summonSickness():void 
 		{
 			_canAttack = false;
@@ -81,6 +109,11 @@ package beat
 		{
 			_canAttack = true;
 		}
+		override public function hurt(Damage:Number):void
+		{
+			super.hurt(Damage);
+			knockback();
+		}
 		public function get shadowSize():Number 
 		{
 			return _shadowSize;
@@ -90,6 +123,7 @@ package beat
 		{
 			_shadowSize = value;
 		}
+		
 		
 	}
 
