@@ -31,6 +31,14 @@ package beat
 			this.add(Registry.player);
 			this.followSprite(Registry.player);
 			Registry.enemyGroup.add(new Navi(80, 50));
+			Registry.enemyGroup.add(new Navi(120, 50));
+			Registry.enemyGroup.add(new Navi(180, 50));
+			Registry.enemyGroup.add(new Navi(230, 50));
+			Registry.enemyGroup.add(new Navi(270, 50));
+			Registry.enemyGroup.add(new Navi(330, 50));
+			Registry.enemyGroup.add(new Navi(370, 50));
+			Registry.enemyGroup.add(new Navi(400, 50));
+			Registry.enemyGroup.add(new Navi(420, 50));
 			//limits
 			upperLimit = 6;
 			lowerLimit = 12;

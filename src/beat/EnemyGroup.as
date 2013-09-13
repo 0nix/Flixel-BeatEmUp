@@ -29,14 +29,17 @@ package beat
 					var n:Navi = members[i];
 					var naviPoint:FlxPoint = new FlxPoint(n.x, n.y);
 					var distance:Number = FlxU.abs(FlxU.getDistance(naviPoint, _playerPoint));
-					if (distance >= 20 && distance < 100)
+					if (distance > 20)
 					{
-						n.startFollow(_playerPoint);
+						n.behaviour = Navi.BEHAVIOUR_IDLE;
 					}
-					if ( n.isFollowingPath && n.pathSpeed == 0)
+					if (distance >= 10 && distance < 20)
 					{
-							n.stopFollow();
-							n.velocity.x = n.velocity.y = 0;
+						n.behaviour = Navi.BEHAVIOUR_PURSUIT;
+					}
+					if (distance < 10 && !n.isFollowingPath)
+					{
+						n.behaviour = Navi.BEHAVIOUR_ATTACK;
 					}
 				}
 			}
