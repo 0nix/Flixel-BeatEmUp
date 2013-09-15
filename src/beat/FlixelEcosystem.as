@@ -10,8 +10,6 @@ package beat
 		public function FlixelEcosystem(width:int, height:int,zoom:int=1) 
 		{
 			super(width / zoom, height / zoom, GameState, zoom);
-			//FlxG.debug  = true;
-			//FlxG.visualDebug = true;
 		}
 		
 	}

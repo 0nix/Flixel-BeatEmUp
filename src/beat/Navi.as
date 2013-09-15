@@ -7,6 +7,7 @@ package beat
 	import org.flixel.FlxTilemap;
 	import org.flixel.FlxPath;
 	import org.flixel.FlxU;
+	import flash.utils.getTimer;
 	/**
 	 * ...
 	 * @author 
@@ -72,14 +73,6 @@ package beat
 					stop();
 				}
 			}
-			/*if (_behaviour == BEHAVIOUR_IDLE && _isFollowingPath)
-			{
-				stopFollow();
-			}
-			if (_behaviour == BEHAVIOUR_IDLE && !_isFollowingPath)
-			{
-				stop();
-			}*/
 			if (_behaviour == BEHAVIOUR_PURSUIT && _isFollowingPath)
 			{	
 				stopFollow();
@@ -88,6 +81,7 @@ package beat
 			{
 				if (!_isAlert)
 					_isAlert = true;
+				stop();
 				startFollow();
 			}
 			
@@ -100,6 +94,31 @@ package beat
 				stop();
 			}
 		}
+		
+		private function goRandom():void 
+		{
+			//(Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum)
+			var factor:Number = FlxU.floor(Math.random() * (3 + 1));
+			switch(factor)
+			{
+				//go up
+				case 0:
+					velocity.y += _pathVelocity/20;
+					break;
+				//go down
+				case 1:
+					velocity.y -= _pathVelocity/20;
+					break;
+				//go left
+				case 2:
+					velocity.x -= _pathVelocity/20;
+					break;
+				//go right
+				case 3:
+					velocity.x += _pathVelocity/20;
+					break;
+			}
+		}
 		private function stop():void
 		{
 			velocity.x = velocity.y = 0;
@@ -108,9 +127,10 @@ package beat
 		private function startFollow():void
 		{
 			_isFollowingPath = true;
-			var path:FlxPath = new FlxPath();
-			path.addPoint(myPoint);
-			path.addPoint(playerPoint);
+			//var path:FlxPath = new FlxPath();
+			//path.addPoint(myPoint);
+			//path.addPoint(playerPoint);
+			var path:FlxPath = Registry.tilemap.findPath(myPoint, playerPoint, true, true);
 			this.followPath(path, _pathVelocity);
 		}
 		private function stopFollow():void

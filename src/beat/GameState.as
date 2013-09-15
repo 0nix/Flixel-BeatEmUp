@@ -47,6 +47,13 @@ package beat
 		override public function update():void
 		{
 			super.update();
+			if (FlxG.keys.D)
+			{
+				if (FlxG.debug && FlxG.visualDebug)
+					FlxG.debug = FlxG.visualDebug = false;
+				else
+					FlxG.debug = FlxG.visualDebug = true;
+			}
 			// Check for player boundaries
 			if (Registry.player.y + Registry.player.height*(1 - Registry.player.shadowSize) <= Registry.TILESIZE*upperLimit)
 			{
