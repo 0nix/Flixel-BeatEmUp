@@ -30,7 +30,8 @@ package beat
 			Registry.player = new Player(40, 60, 40);
 			this.add(Registry.player);
 			this.followSprite(Registry.player);
-			Registry.enemyGroup.add(new Navi(80, 50));
+			Registry.enemyGroup.add(new Navi(20, 50));
+			//Registry.enemyGroup.add(new Navi(80, 50));
 			Registry.enemyGroup.add(new Navi(120, 50));
 			Registry.enemyGroup.add(new Navi(180, 50));
 			Registry.enemyGroup.add(new Navi(230, 50));

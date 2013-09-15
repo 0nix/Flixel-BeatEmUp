@@ -1,10 +1,12 @@
 package beat 
 {
+	import org.flixel.FlxParticle;
 	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxG;
 	import org.flixel.FlxTilemap;
 	import org.flixel.FlxPath;
+	import org.flixel.FlxU;
 	/**
 	 * ...
 	 * @author 
@@ -12,11 +14,19 @@ package beat
 	public class Navi extends FlxSprite 
 	{
 		private var _pathVelocity:Number;
-		private var _isFollowingPath:Boolean;
+		
+		private var _isFollowingPath:Boolean = false;
+		private var _isAlert:Boolean = false;
+		
 		public static const BEHAVIOUR_IDLE:int = 0;
 		public static const BEHAVIOUR_PURSUIT:int = 1;
 		public static const BEHAVIOUR_ATTACK:int = 2;
+		
+		public static const PURSUIT_THRESHOLD:int = 40;
+		public static const ATTACK_THRESHOLD:int = 5;
 		private var _behaviour:int;
+		private var myPoint:FlxPoint = new FlxPoint();
+		private var playerPoint:FlxPoint  = new FlxPoint();
 		public function Navi(X:Number=0, Y:Number=0, pathVelocity:Number = 35) 
 		{
 			super(X, Y,null);
@@ -26,43 +36,90 @@ package beat
 		override public function update():void
 		{
 			super.update();
-			if (behavior == BEHAVIOUR_IDLE)
+			myPoint.x = this.x;
+			myPoint.y = this.y;
+			playerPoint.x = Registry.player.x + Registry.player.width;
+			playerPoint.y = Registry.player.y + Registry.player.height / 2;
+			
+			//Fixed-state Machine determines behaviour phases
+			var distance:Number = FlxU.abs(FlxU.getDistance(myPoint, playerPoint));
+			if (distance > PURSUIT_THRESHOLD)
 			{
-				//do random shit
+				_behaviour = BEHAVIOUR_IDLE;
 			}
-			if (behaviour == BEHAVIOUR_PURSUIT && !_isFollowingPath && Registry.player)
+			if (distance >= ATTACK_THRESHOLD && distance < PURSUIT_THRESHOLD)
 			{
-				startFollow(new FlxPoint(Registry.player.x + Registry.player.width + 10, 
-										Registry.player.y + Registry.player.height / 2));
-				_isFollowingPath = true;
+				_behaviour = BEHAVIOUR_PURSUIT;
 			}
-			if (behaviour == BEHAVIOUR_PURSUIT && pathSpeed == 0)
+			if (distance < ATTACK_THRESHOLD)
+			{
+				_behaviour = BEHAVIOUR_ATTACK;
+			}
+			//If at any time path speed is 0 (which happens everytime the path completes itself) 
+			if (pathSpeed == 0)
+			{
+				_isFollowingPath = false;
+			}
+			// Reaction to Behaviours
+			if (_behaviour == BEHAVIOUR_IDLE)
+			{
+				if (_isAlert)
+				{
+					_behaviour = BEHAVIOUR_PURSUIT;
+				}
+				else
+				{
+					stop();
+				}
+			}
+			/*if (_behaviour == BEHAVIOUR_IDLE && _isFollowingPath)
 			{
 				stopFollow();
-				velocity.x = velocity.y = 0;
-				_isFollowingPath = false;
 			}
-			if (behaviour == BEHAVIOUR_ATTACK && !_isFollowingPath)
+			if (_behaviour == BEHAVIOUR_IDLE && !_isFollowingPath)
 			{
-				//attack the player!!!
-				trace("I am attacking, fear me!!!");
+				stop();
+			}*/
+			if (_behaviour == BEHAVIOUR_PURSUIT && _isFollowingPath)
+			{	
+				stopFollow();
+			}
+			if (_behaviour == BEHAVIOUR_PURSUIT && !_isFollowingPath)
+			{
+				if (!_isAlert)
+					_isAlert = true;
+				startFollow();
+			}
+			
+			if (_behaviour == BEHAVIOUR_ATTACK && _isFollowingPath)
+			{
+				stopFollow();
+			}
+			if (_behaviour == BEHAVIOUR_ATTACK && !_isFollowingPath)
+			{
+				stop();
 			}
 		}
-		public function startFollow(point:FlxPoint):void
+		private function stop():void
 		{
-			if (!_isFollowingPath)
-			{
-				var path:FlxPath = Registry.tilemap.findPath(new FlxPoint(this.x,this.y), point,true,true);
-				this.followPath(path,_pathVelocity);
-			}
+			velocity.x = velocity.y = 0;
+			acceleration.x = acceleration.y = 0;
 		}
-		public function stopFollow():void
+		private function startFollow():void
 		{
-			if (_isFollowingPath)
+			_isFollowingPath = true;
+			var path:FlxPath = new FlxPath();
+			path.addPoint(myPoint);
+			path.addPoint(playerPoint);
+			this.followPath(path, _pathVelocity);
+		}
+		private function stopFollow():void
+		{	
+			if (pathSpeed == 0)
 			{
-				this.stopFollowingPath();
+				this.stopFollowingPath(true);
 				_isFollowingPath = false;
-				velocity.x = velocity.y = 0;
+				stop();
 			}
 		}
 		public function get isFollowingPath():Boolean 

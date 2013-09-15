@@ -4,6 +4,7 @@ package beat
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
+	import org.flixel.FlxPoint;
 	import org.flixel.FlxTilemap;
 	/**
 	 * ...
