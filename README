@@ -2,3 +2,11 @@ Flixel BeatEmUp Alpha version 0
 
 10-09-2013:
 Big commit with git files, readme and work already done in progress.
+
+15-09-2013:
+Prototype in playable state completed. 
+
+Controls: 
+Arrows to Move character
+Space to Attack
+D to activate Debug View
