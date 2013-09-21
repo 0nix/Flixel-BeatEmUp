@@ -61,6 +61,15 @@ package
 					case "pushLevel":
 						Registry.pushLevelInfo(Registry.pregame.arg[i].@val);
 						break;
+					case "upperLimit":
+						Registry.upperLimit = int(Registry.pregame.arg[i].@val);
+						break;
+					case "lowerLimit":
+						Registry.lowerLimit = int(Registry.pregame.arg[i].@val);
+						break;
+					case "drawDistance":
+						Registry.drawDistance = int(Registry.pregame.arg[i].@val);
+						break;
 					case "start":
 						this.dispatchEvent( new Event("START_GAME"));
 						break;

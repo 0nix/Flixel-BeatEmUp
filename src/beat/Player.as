@@ -36,6 +36,14 @@ package beat
 			super.update();
 			this.acceleration.x = 0;
 			this.acceleration.y = 0;
+			if (this.y + this.height*(1 - this.shadowSize) <= Registry.TILESIZE*Registry.upperLimit)
+			{
+				this.y = Registry.TILESIZE * Registry.upperLimit - this.height * (1 - this.shadowSize);
+			}
+			else if (this.y +this.height >= Registry.TILESIZE * Registry.lowerLimit)
+			{
+				this.y = Registry.TILESIZE * Registry.lowerLimit - this.height;
+			}
 			if (_canAttack)
 			{
 				if (FlxG.keys.Q)

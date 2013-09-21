@@ -11,8 +11,7 @@ package beat
 		private var player:Player;
 		private var hits:HitGroup;
 		private var enemies:EnemyGroup;
-		private var upperLimit:int;
-		private var lowerLimit:int;
+		private var arrayLength:int;
 		override public function create():void
 		{
 			super.create();
@@ -25,25 +24,6 @@ package beat
 			this.add(Registry.tilemap);
 			this.add(Registry.hitGroup);
 			this.add(Registry.enemyGroup);
-			//interactive objects
-			var len:int = Registry.ingame.length;
-			for (var i:int = 0; i < len; i++)
-			{
-				switch(Registry.ingame[i].type)
-				{
-					case "player":
-						Registry.player = new Player(Registry.ingame[i].posX, Registry.ingame[i].posY);
-						this.add(Registry.player);
-						this.followSprite(Registry.player);
-						break;
-					case "navi":
-						Registry.enemyGroup.add(new Navi(Registry.ingame[i].posX, Registry.ingame[i].posY));
-						break;
-				}
-			}
-			//limits
-			upperLimit = 6;
-			lowerLimit = 12;
 		}
 		override public function update():void
 		{
@@ -55,17 +35,30 @@ package beat
 				else
 					FlxG.debug = FlxG.visualDebug = true;
 			}
-			// Check for player boundaries
-			if (Registry.player.y + Registry.player.height*(1 - Registry.player.shadowSize) <= Registry.TILESIZE*upperLimit)
+			//interactive objects
+			arrayLength = Registry.ingame.length;
+			for (var i:int = 0; i < arrayLength; i++)
 			{
-				Registry.player.y = Registry.TILESIZE * upperLimit - Registry.player.height * (1 - Registry.player.shadowSize);
-			}
-			else if (Registry.player.y +Registry.player.height >= Registry.TILESIZE * lowerLimit)
-			{
-				Registry.player.y = Registry.TILESIZE * lowerLimit - Registry.player.height;
+				switch(Registry.ingame[i].type)
+				{
+					case "player":
+						Registry.player = new Player(Registry.ingame[i].posX, Registry.ingame[i].posY,40);
+						this.add(Registry.player);
+						this.followSprite(Registry.player);
+						Registry.ingame.splice(i, 1);
+						arrayLength--;
+						break;
+					case "navi":
+						if ( Registry.player && FlxU.abs(Registry.player.x+Registry.player.width - Registry.ingame[i].posX) <= Registry.drawDistance)
+						{
+							Registry.enemyGroup.add(new Navi(Registry.ingame[i].posX, Registry.ingame[i].posY));
+							Registry.ingame.splice(i, 1);
+							arrayLength--;
+						}
+						break;
+				}
 			}
 			//COLLISIONS
-			//FlxG.collide(Registry.tilemap, Registry.enemyGroup);
 			FlxG.overlap(Registry.hitGroup, Registry.enemyGroup, onEnemyHit);
 		}
 		private function onEnemyHit(o1:FlxBasic, o2:FlxBasic):void

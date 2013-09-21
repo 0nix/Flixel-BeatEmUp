@@ -20,6 +20,9 @@ package beat
 		public static var tilemap:FlxTilemap;
 		public static var pregame:XMLList;
 		public static var ingame:Vector.<ScriptEntry>;
+		public static var upperLimit:int;
+		public static var lowerLimit:int;
+		public static var drawDistance:int;
 		public static const TILESIZE:int = 8;
 		public static function getCurrentLevel():String
 		{
