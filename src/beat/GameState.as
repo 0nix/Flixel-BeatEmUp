@@ -25,21 +25,22 @@ package beat
 			this.add(Registry.tilemap);
 			this.add(Registry.hitGroup);
 			this.add(Registry.enemyGroup);
-			
 			//interactive objects
-			Registry.player = new Player(40, 60, 40);
-			this.add(Registry.player);
-			this.followSprite(Registry.player);
-			Registry.enemyGroup.add(new Navi(20, 50));
-			//Registry.enemyGroup.add(new Navi(80, 50));
-			Registry.enemyGroup.add(new Navi(120, 50));
-			Registry.enemyGroup.add(new Navi(180, 50));
-			Registry.enemyGroup.add(new Navi(230, 50));
-			Registry.enemyGroup.add(new Navi(270, 50));
-			Registry.enemyGroup.add(new Navi(330, 50));
-			Registry.enemyGroup.add(new Navi(370, 50));
-			Registry.enemyGroup.add(new Navi(400, 50));
-			Registry.enemyGroup.add(new Navi(420, 50));
+			var len:int = Registry.ingame.length;
+			for (var i:int = 0; i < len; i++)
+			{
+				switch(Registry.ingame[i].type)
+				{
+					case "player":
+						Registry.player = new Player(Registry.ingame[i].posX, Registry.ingame[i].posY);
+						this.add(Registry.player);
+						this.followSprite(Registry.player);
+						break;
+					case "navi":
+						Registry.enemyGroup.add(new Navi(Registry.ingame[i].posX, Registry.ingame[i].posY));
+						break;
+				}
+			}
 			//limits
 			upperLimit = 6;
 			lowerLimit = 12;
@@ -64,7 +65,7 @@ package beat
 				Registry.player.y = Registry.TILESIZE * lowerLimit - Registry.player.height;
 			}
 			//COLLISIONS
-			FlxG.collide(Registry.tilemap, Registry.enemyGroup);
+			//FlxG.collide(Registry.tilemap, Registry.enemyGroup);
 			FlxG.overlap(Registry.hitGroup, Registry.enemyGroup, onEnemyHit);
 		}
 		private function onEnemyHit(o1:FlxBasic, o2:FlxBasic):void

@@ -18,6 +18,8 @@ package beat
 		public static var hitGroup:HitGroup;
 		public static var enemyGroup:EnemyGroup;
 		public static var tilemap:FlxTilemap;
+		public static var pregame:XMLList;
+		public static var ingame:Vector.<ScriptEntry>;
 		public static const TILESIZE:int = 8;
 		public static function getCurrentLevel():String
 		{

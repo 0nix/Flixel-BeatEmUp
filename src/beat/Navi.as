@@ -127,10 +127,9 @@ package beat
 		private function startFollow():void
 		{
 			_isFollowingPath = true;
-			//var path:FlxPath = new FlxPath();
-			//path.addPoint(myPoint);
-			//path.addPoint(playerPoint);
-			var path:FlxPath = Registry.tilemap.findPath(myPoint, playerPoint, true, true);
+			var path:FlxPath = new FlxPath();
+			path.addPoint(myPoint);
+			path.addPoint(playerPoint);
 			this.followPath(path, _pathVelocity);
 		}
 		private function stopFollow():void
