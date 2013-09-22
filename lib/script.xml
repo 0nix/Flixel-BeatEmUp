@@ -14,6 +14,8 @@ author: UrusaiOnix
 	</pregame>
 	<ingame>
 		<sprite type="player" x="40" y="60" velocity="40"/>
+		<sprite type="player" x="30" y="60" velocity="40"/>
+		<sprite type="player" x="10" y="60" velocity="40"/>
 		<sprite type="navi" x="20" y="50"/>
 		<sprite type="navi" x="120" y="50"/>
 		<sprite type="navi" x="180" y="50"/>

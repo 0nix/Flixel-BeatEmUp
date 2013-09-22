@@ -48,9 +48,28 @@ package
 			Registry.ingame = new Vector.<ScriptEntry>();
 			Registry.pregame = script.pregame;
 			var ilen:int = script.ingame.sprite.length();
+			var playerTagExists:Boolean = false;
 			for (var j:int = 0; j < ilen; j++)
 			{
-				Registry.ingame.push(new ScriptEntry(script.ingame.sprite[j].@type, int(script.ingame.sprite[j].@x), int(script.ingame.sprite[j].@y)));
+				var s:String = script.ingame.sprite[j].@type;
+				switch(s)
+				{
+					case "player":
+						if (!playerTagExists)
+						{
+							trace(j);
+							playerTagExists = true;
+							Registry.ingame.push(new ScriptEntry(s, int(script.ingame.sprite[j].@x), int(script.ingame.sprite[j].@y)));
+						}
+						break;
+					case "navi":
+						Registry.ingame.push(new ScriptEntry(s, int(script.ingame.sprite[j].@x), int(script.ingame.sprite[j].@y)));
+						break;
+					default:
+						this.dispatchEvent( new IOErrorEvent("TAG NOT RECOGNIZED",true,false,"Script tag wasn't recognized"));
+						break;
+						
+				}
 			}
 			var plen:int = Registry.pregame.arg.length();
 			for (var i:int = 0; i < plen; i++)
