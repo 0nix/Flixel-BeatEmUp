@@ -10,8 +10,7 @@ author: UrusaiOnix
 		<arg type="pushLevel" val="../lib/level.csv" name="testlevel" />
 		<!---<arg type="upperLimit" val="6"/>
 		<arg type="lowerLimit" val="12"/> !--->
-		<arg type="drawDistance" val="200"/>
-		<arg type="start" val=""/>
+		<arg type="drawDistance" val="90"/>
 	</pregame>
 	<ingame>
 		<sprite type="player" x="40" y="60" velocity="40"/>

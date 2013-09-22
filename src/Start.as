@@ -36,7 +36,7 @@ package
 			trace(e.text);
 		}
 		
-		private function onStartGame(e:Event):void 
+		private function onStartGame(e:Event=null):void 
 		{
 			var fxe:FlixelEcosystem = new FlixelEcosystem(stage.stageWidth, stage.stageHeight,2);
 			this.addChild(fxe);
@@ -70,14 +70,12 @@ package
 					case "drawDistance":
 						Registry.drawDistance = int(Registry.pregame.arg[i].@val);
 						break;
-					case "start":
-						this.dispatchEvent( new Event("START_GAME"));
-						break;
 					default:
 						this.dispatchEvent( new IOErrorEvent("TAG NOT RECOGNIZED",true,false,"Script tag wasn't recognized"));
 						break;
 				}
 			}
+			onStartGame();
 		}
 		
 	}
