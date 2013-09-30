@@ -6,15 +6,13 @@ To be used in junction with Flixel-Beatemup by UrusaiOnix
 author: UrusaiOnix
 --->
 <gamescript>
-	<pregame>
-		<arg type="pushLevel" val="../lib/level.csv" id="1000"/>
-		<arg type="pushLevel" val="../lib/level.csv" id="2000"/>
-		<arg type="pushLevel" val="../lib/level.csv" id="3000"/>
+	<preflixel>
+		<arg type="pushLevel" val="../lib/level.csv" name="testlevel" id="0" />
+		<!---<arg type="upperLimit" val="6"/>
+		<arg type="lowerLimit" val="12"/> !--->
 		<arg type="drawDistance" val="90"/>
-	</pregame>
-	<ingame id="1000">
-		<!---<arg type="upperLimit" val="6" x="0" y="0"/>
-		<arg type="lowerLimit" val="12" x="0" y="0" /> !--->
+	</preflixel>
+	<ingame id="0">
 		<sprite type="player" x="40" y="60" velocity="40"/>
 		<sprite type="player" x="30" y="60" velocity="40"/>
 		<sprite type="player" x="10" y="60" velocity="40"/>

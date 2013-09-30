@@ -1,7 +1,8 @@
 package beat 
 {
 	import org.flixel.*;
-	/**
+	import com.greensock.TweenMax;
+	/*
 	 * ...
 	 * @author 
 	 */
@@ -12,13 +13,16 @@ package beat
 		private var hits:HitGroup;
 		private var enemies:EnemyGroup;
 		private var arrayLength:int;
+		private var gameScript:Vector.<ScriptEntry>;
+		private var lid:int;
 		override public function create():void
 		{
 			super.create();
 			//generals
 			FlxG.bgColor = FlxG.BLUE;
+			
 			//field objects
-			Registry.tilemap = new FlxTilemap().loadMap(Registry.getCurrentLevel(), FlxTilemap.ImgAuto, 0, 0, FlxTilemap.AUTO);
+			Registry.tilemap = new FlxTilemap().loadMap(Registry.getLevel(lid), FlxTilemap.ImgAuto, 0, 0, FlxTilemap.AUTO);
 			Registry.hitGroup = new HitGroup(20);
 			Registry.enemyGroup = new EnemyGroup(20);
 			this.add(Registry.tilemap);
@@ -35,24 +39,38 @@ package beat
 				else
 					FlxG.debug = FlxG.visualDebug = true;
 			}
-			//interactive objects
-			arrayLength = Registry.ingame.length;
+			//script entries processed
+			arrayLength = gameScript.length;
 			for (var i:int = 0; i < arrayLength; i++)
 			{
-				switch(Registry.ingame[i].type)
+				switch(gameScript[i].type)
 				{
 					case "player":
-						Registry.player = new Player(Registry.ingame[i].posX, Registry.ingame[i].posY,40);
+						Registry.player = new Player(gameScript[i].posX, gameScript[i].posY,40);
 						this.add(Registry.player);
 						this.followSprite(Registry.player);
-						Registry.ingame.splice(i, 1);
+						gameScript.splice(i, 1);
 						arrayLength--;
 						break;
-					case "navi":
-						if ( Registry.player && FlxU.abs(Registry.player.x+Registry.player.width - Registry.ingame[i].posX) <= Registry.drawDistance)
+					case "upperLimit":
+						if ( Registry.player && Registry.player.x+Registry.player.width == gameScript[i].posX)
 						{
-							Registry.enemyGroup.add(new Navi(Registry.ingame[i].posX, Registry.ingame[i].posY));
-							Registry.ingame.splice(i, 1);
+							//tween goddamnit
+							gameScript.splice(i, 1);
+							arrayLength--;
+						}
+					case "lowerLimit":
+						if ( Registry.player && Registry.player.x+Registry.player.width == gameScript[i].posX)
+						{
+							//tween goddamnit
+							gameScript.splice(i, 1);
+							arrayLength--;
+						}
+					case "navi":
+						if ( Registry.player && FlxU.abs(Registry.player.x+Registry.player.width - gameScript[i].posX) <= Registry.drawDistance)
+						{
+							Registry.enemyGroup.add(new Navi(gameScript[i].posX, gameScript[i].posY));
+							gameScript.splice(i, 1);
 							arrayLength--;
 						}
 						break;
@@ -81,9 +99,10 @@ package beat
 				setCameraBounds();
 			}
 		}
-		public function GameState()
+		public function GameState(levelID:int,script:Vector.<ScriptEntry>)
 		{
-			
+			gameScript = script;
+			lid = levelID;
 		}
 	}
 

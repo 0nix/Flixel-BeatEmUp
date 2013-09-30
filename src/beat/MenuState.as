@@ -22,16 +22,18 @@ package beat
 			this.add(u);
 			var v:FlxText = new FlxText(0, u.height + u.y, FlxG.width, "D to activate debug view");
 			this.add(v);
-			var w:FlxText = new FlxText(0, v.height + v.y, FlxG.width, "Press X to start the demo");
+			var w:FlxText = new FlxText(0, v.height + v.y, FlxG.width, "Click anywhere to start the demo");
 			this.add(w);
+			FlxG.mouse.show();
 		}
 		override public function update():void
 		{
 			super.update();
-			if (FlxG.keys.X)
+			if (FlxG.mouse.justReleased())
 			 {
-				 FlxG.switchState( new GameState());
+				 FlxG.switchState( new SelectState());
 			 }
+			 
 		}
 		public function MenuState() 
 		{
